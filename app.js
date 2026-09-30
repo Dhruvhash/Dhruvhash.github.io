@@ -5,11 +5,12 @@ function draw(t){ctx.clearRect(0,0,w,h);const a=reduce?.6:t*.00013,R=Math.min(w*
 
 
 const motionToggle=document.querySelector('.motion-toggle');
-function syncMotion(){if(reduce)cancelAnimationFrame(frame);document.documentElement.dataset.motion=reduce?'paused':'playing';motionToggle.textContent=reduce?'Enable motion':'Pause motion';motionToggle.setAttribute('aria-pressed',String(reduce));}
+function syncMotion(){if(reduce){cancelAnimationFrame(frame);draw(0);}document.documentElement.dataset.motion=reduce?'paused':'playing';motionToggle.textContent=reduce?'Enable motion':'Pause motion';motionToggle.setAttribute('aria-pressed',String(reduce));}
 syncMotion();motionToggle.addEventListener('click',()=>{reduce=!reduce;syncMotion();if(!reduce)frame=requestAnimationFrame(draw)});
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',e=>{const wasPaused=reduce;reduce=e.matches;syncMotion();if(wasPaused&&!reduce)frame=requestAnimationFrame(draw)});
 const progress=document.querySelector('.reading-progress');let scrollPending=false;
 function updateProgress(){const max=document.documentElement.scrollHeight-innerHeight;progress.style.transform='scaleX('+(max>0?scrollY/max:0)+')';scrollPending=false;}
 addEventListener('scroll',()=>{if(!scrollPending){scrollPending=true;requestAnimationFrame(updateProgress)}},{passive:true});updateProgress();
 if(matchMedia('(hover: hover) and (pointer: fine)').matches){document.querySelectorAll('.project').forEach(card=>{card.addEventListener('pointermove',e=>{if(reduce)return;const r=card.getBoundingClientRect();card.style.setProperty('--pointer-x',(e.clientX-r.left)+'px');card.style.setProperty('--pointer-y',(e.clientY-r.top)+'px')})});}
+
 
